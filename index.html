@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🕯️ תפריט שבת</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500;700;900&family=Heebo:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FAF6EF;
+      --warm-white: #FFFDF8;
+      --gold: #C8973A;
+      --gold-light: #E8C06A;
+      --gold-pale: #F5E8CC;
+      --deep: #2C2016;
+      --text: #3D2E1A;
+      --muted: #8C7B62;
+      --border: #E2D5BC;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Heebo', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+
+    /* HEADER */
+    .header {
+      background: var(--deep);
+      padding: 24px 20px 18px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+    }
+    .header-candles { font-size: 22px; letter-spacing: 10px; margin-bottom: 5px; }
+    .header h1 {
+      font-family: 'Frank Ruhl Libre', serif;
+      font-size: clamp(20px, 5vw, 32px);
+      font-weight: 700;
+      color: var(--gold-light);
+    }
+    .header-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .sync-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      margin-top: 7px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+    }
+    .sync-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #888;
+      transition: background 0.3s;
+      flex-shrink: 0;
+    }
+    .sync-dot.ok { background: #4CAF50; }
+    .sync-dot.loading { background: #FFC107; animation: pulse 0.8s infinite; }
+    .sync-dot.error { background: #F44336; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* MAIN */
+    .main { max-width: 680px; margin: 0 auto; padding: 18px 13px; }
+
+    /* SECTION */
+    .section {
+      background: var(--warm-white);
+      border-radius: 16px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(44,32,22,0.07);
+      border: 1px solid var(--border);
+    }
+    .section-header {
+      padding: 14px 17px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .section-header:hover { background: var(--gold-pale); }
+    .section-icon { font-size: 19px; flex-shrink: 0; }
+    .section-title {
+      font-family: 'Frank Ruhl Libre', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--deep);
+      flex: 1;
+    }
+    .section-badge {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 20px;
+      background: var(--gold-pale);
+      color: var(--gold);
+      border: 1px solid var(--gold-light);
+    }
+    .section-toggle { font-size: 11px; color: var(--muted); transition: transform 0.2s; }
+    .section.collapsed .section-toggle { transform: rotate(-90deg); }
+
+    /* PROGRESS */
+    .progress-bar { height: 3px; background: var(--border); margin: 0 17px 13px; border-radius: 2px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.4s; }
+
+    /* SUBSECTION */
+    .subsection { padding: 6px 17px 2px; }
+    .subsection-title {
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      padding: 5px 0 4px;
+      border-bottom: 1px dashed var(--border);
+      margin-bottom: 1px;
+    }
+
+    /* ITEM */
+    .item {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 9px 0;
+      border-bottom: 1px solid #F0EAE0;
+      animation: fadeIn 0.2s ease;
+    }
+    .item:last-child { border-bottom: none; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(-3px)} to{opacity:1;transform:translateY(0)} }
+
+    .item-check {
+      width: 21px; height: 21px;
+      border-radius: 6px;
+      border: 2px solid var(--border);
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      background: white;
+    }
+    .item-check:hover { border-color: var(--gold); }
+    .item-check.checked { background: var(--gold); border-color: var(--gold); }
+    .item-check.checked::after { content: '✓'; font-size: 12px; font-weight: 700; color: white; }
+
+    .item-body { flex: 1; min-width: 0; }
+    .item-name { font-size: 15px; color: var(--text); word-break: break-word; }
+    .item.done .item-name { text-decoration: line-through; color: var(--muted); }
+    .item-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .item-meta .owner { font-weight: 500; color: var(--gold); }
+    .item-note { font-size: 11px; color: var(--muted); }
+
+    .item-actions {
+      display: flex;
+      gap: 2px;
+      flex-shrink: 0;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .item:hover .item-actions { opacity: 1; }
+    @media(max-width:500px){ .item-actions{opacity:1} }
+    .item-actions button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 3px 5px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--muted);
+      transition: background 0.1s;
+    }
+    .item-actions button:hover { background: var(--gold-pale); }
+
+    /* ADD ROW */
+    .add-row { padding: 7px 17px 13px; display: flex; gap: 7px; }
+    .add-input {
+      flex: 1;
+      padding: 8px 10px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--cream);
+      outline: none;
+      direction: rtl;
+      transition: border-color 0.15s;
+    }
+    .add-input:focus { border-color: var(--gold); background: white; }
+    .add-input::placeholder { color: var(--muted); }
+    .add-btn {
+      padding: 8px 13px;
+      background: var(--gold);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .add-btn:hover { background: #B8832A; }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(44,32,22,0.55);
+      z-index: 100;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--warm-white);
+      border-radius: 20px 20px 0 0;
+      padding: 22px 18px 40px;
+      width: 100%;
+      max-width: 640px;
+      animation: slideUp 0.22s ease;
+    }
+    @keyframes slideUp { from{transform:translateY(28px);opacity:0} to{transform:translateY(0);opacity:1} }
+    .modal-title {
+      font-family: 'Frank Ruhl Libre', serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--deep);
+      margin-bottom: 14px;
+    }
+    .modal-field { margin-bottom: 12px; }
+    .modal-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; font-weight: 500; }
+    .modal-input {
+      width: 100%;
+      padding: 9px 11px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      background: var(--cream);
+      outline: none;
+      direction: rtl;
+    }
+    .modal-input:focus { border-color: var(--gold); }
+    .modal-btns { display: flex; gap: 9px; margin-top: 14px; }
+    .modal-save {
+      flex: 1; padding: 11px;
+      background: var(--gold); color: white;
+      border: none; border-radius: 12px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 14px; font-weight: 500; cursor: pointer;
+    }
+    .modal-save:hover { background: #B8832A; }
+    .modal-cancel {
+      padding: 11px 18px;
+      background: var(--border); color: var(--text);
+      border: none; border-radius: 12px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 14px; cursor: pointer;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 22px; left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      background: var(--deep); color: var(--gold-light);
+      padding: 9px 18px; border-radius: 30px;
+      font-size: 13px; z-index: 200;
+      transition: transform 0.28s;
+      pointer-events: none; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* LOADING */
+    .loading-screen {
+      position: fixed; inset: 0;
+      background: var(--cream);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 999; gap: 12px;
+    }
+    .loading-screen .candles { font-size: 34px; letter-spacing: 12px; }
+    .loading-screen p { color: var(--muted); font-size: 13px; }
+    .loading-screen.hidden { display: none; }
+
+    .footer { text-align: center; padding: 18px; font-size: 11px; color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<div class="loading-screen" id="loadingScreen">
+  <div class="candles">🕯️ 🕯️</div>
+  <p>מתחבר לרשימה המשותפת...</p>
+</div>
+
+<div class="header">
+  <div class="header-candles">🕯️ 🕯️</div>
+  <h1>תפריט שבת</h1>
+  <div class="header-sub">לחצו ✏️ כדי לציין מי מביא ✦ מתעדכן לכולם בזמן אמת</div>
+  <div class="sync-status">
+    <div class="sync-dot loading" id="syncDot"></div>
+    <span id="syncText">מתחבר...</span>
+  </div>
+</div>
+
+<div class="main" id="app"></div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title">✏️ עריכה</div>
+    <div class="modal-field">
+      <div class="modal-label">מה מכינים / מביאים</div>
+      <input class="modal-input" id="modalName" placeholder="שם המנה..." />
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">מי מביא?</div>
+      <input class="modal-input" id="modalOwner" placeholder="שם..." />
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">הערה (אופציונלי)</div>
+      <input class="modal-input" id="modalNote" placeholder="פרטים נוספים..." />
+    </div>
+    <div class="modal-btns">
+      <button class="modal-save" id="modalSave">שמור לכולם ✓</button>
+      <button class="modal-cancel" onclick="closeModal()">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getDatabase, ref, set, onValue, update, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+  // ── CONFIG ──────────────────────────────────────
+  const firebaseConfig = {
+    databaseURL: "https://shabat-menu-357c9-default-rtdb.europe-west1.firebasedatabase.app"
+  };
+
+  const SEED = [
+    {
+      id: 'friday', icon: '🌙', title: 'ליל שבת',
+      subsections: [
+        {
+          id: 'friday-salads', title: 'סלטים',
+          items: [
+            { id: 'i1', name: 'חומוס', owner: '', note: '', done: false },
+            { id: 'i2', name: 'טחינה', owner: '', note: '', done: false },
+            { id: 'i3', name: 'מטבוחה', owner: '', note: '', done: false },
+            { id: 'i4', name: 'חצילים', owner: '', note: '', done: false },
+            { id: 'i5', name: 'סלט נוסף?', owner: '', note: '', done: false },
+          ]
+        },
+        {
+          id: 'friday-main', title: 'מרק ועיקריות',
+          items: [
+            { id: 'i6', name: 'מרק?', owner: '', note: '', done: false },
+            { id: 'i7', name: 'אורז', owner: '', note: '', done: false },
+            { id: 'i8', name: 'תפוחי אדמה', owner: '', note: '', done: false },
+            { id: 'i9', name: 'עוף', owner: '', note: '', done: false },
+            { id: 'i10', name: 'ירק', owner: '', note: '', done: false },
+          ]
+        }
+      ]
+    },
+    {
+      id: 'shabbat', icon: '☀️', title: 'סעודת שבת',
+      subsections: [
+        {
+          id: 'shabbat-starters', title: 'פתיחה',
+          items: [
+            { id: 'i11', name: 'סלטים (כמו הלילה?)', owner: '', note: '', done: false },
+            { id: 'i12', name: 'מנה ראשונה / דג?', owner: '', note: '', done: false },
+            { id: 'i13', name: 'פאי רועים?', owner: '', note: '', done: false },
+          ]
+        },
+        {
+          id: 'shabbat-main', title: 'עיקריות',
+          items: [
+            { id: 'i14', name: 'אורז מהלילה', owner: '', note: '', done: false },
+            { id: 'i15', name: 'טשולנט', owner: 'חזי ואודיה', note: '', done: false },
+            { id: 'i16', name: 'קוגל?', owner: 'חזי ואודיה', note: '', done: false },
+            { id: 'i17', name: 'תוספת?', owner: '', note: '', done: false },
+          ]
+        }
+      ]
+    },
+    {
+      id: 'kiddush', icon: '🍷', title: 'קידוש בוקר + חלות',
+      subsections: [
+        {
+          id: 'kiddush-items', title: '',
+          items: [
+            { id: 'i18', name: 'חלות ביתיות', owner: 'חזי ואודיה', note: '', done: false },
+            { id: 'i19', name: 'חלות קנויות', owner: 'חזי ואודיה', note: '', done: false },
+            { id: 'i20', name: 'עוגות לקידוש', owner: 'כולם?', note: '', done: false },
+          ]
+        }
+      ]
+    },
+    {
+      id: 'misc', icon: '🥜', title: 'שתיה, פיצוחים וחד״פ',
+      subsections: [
+        {
+          id: 'misc-items', title: '',
+          items: [
+            { id: 'i21', name: 'שתיה?', owner: '', note: '', done: false },
+            { id: 'i22', name: 'פיצוחים?', owner: '', note: '', done: false },
+            { id: 'i23', name: 'חטיפים?', owner: '', note: '', done: false },
+            { id: 'i24', name: 'חד״פ (אפשר גם משודרג)', owner: 'חזי ואודיה', note: 'יכולים לקנות', done: false },
+          ]
+        }
+      ]
+    }
+  ];
+
+  // ── INIT ─────────────────────────────────────────
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const menuRef = ref(db, 'menu');
+
+  let state = [];
+  let collapsed = {};
+  let modalCtx = null;
+  let idCtr = Date.now();
+  function genId() { return 'x' + (++idCtr); }
+
+  function setSyncStatus(status, text) {
+    document.getElementById('syncDot').className = 'sync-dot ' + status;
+    document.getElementById('syncText').textContent = text;
+  }
+
+  // ── REALTIME LISTENER ────────────────────────────
+  onValue(menuRef, (snapshot) => {
+    const data = snapshot.val();
+    if (!data) {
+      // First time — seed the database
+      set(menuRef, SEED).then(() => setSyncStatus('ok', 'מסונכרן ✓'));
+    } else {
+      state = Array.isArray(data) ? data : Object.values(data);
+      setSyncStatus('ok', 'מסונכרן ✓');
+      document.getElementById('loadingScreen').classList.add('hidden');
+      render();
+    }
+  }, (error) => {
+    setSyncStatus('error', 'שגיאת חיבור');
+    document.getElementById('loadingScreen').classList.add('hidden');
+    showToast('שגיאת חיבור — בדוק אינטרנט');
+  });
+
+  // ── SAVE ─────────────────────────────────────────
+  async function saveState() {
+    setSyncStatus('loading', 'שומר...');
+    try {
+      await set(menuRef, state);
+      setSyncStatus('ok', 'מסונכרן ✓');
+    } catch(e) {
+      setSyncStatus('error', 'שגיאת שמירה');
+      showToast('שגיאה — נסה שוב');
+    }
+  }
+
+  // ── RENDER ───────────────────────────────────────
+  function render() {
+    const appEl = document.getElementById('app');
+    appEl.innerHTML = '';
+
+    state.forEach(section => {
+      const allItems = section.subsections.flatMap(s => s.items);
+      const doneCount = allItems.filter(i => i.done).length;
+      const total = allItems.length;
+
+      const div = document.createElement('div');
+      div.className = 'section' + (collapsed[section.id] ? ' collapsed' : '');
+
+      const hdr = document.createElement('div');
+      hdr.className = 'section-header';
+      hdr.innerHTML = `
+        <span class="section-icon">${section.icon}</span>
+        <span class="section-title">${section.title}</span>
+        <span class="section-badge">${doneCount}/${total}</span>
+        <span class="section-toggle">▾</span>
+      `;
+      hdr.onclick = () => { collapsed[section.id] = !collapsed[section.id]; render(); };
+      div.appendChild(hdr);
+
+      if (!collapsed[section.id]) {
+        if (total > 0) {
+          const pb = document.createElement('div');
+          pb.className = 'progress-bar';
+          pb.innerHTML = `<div class="progress-fill" style="width:${Math.round(doneCount/total*100)}%"></div>`;
+          div.appendChild(pb);
+        }
+
+        section.subsections.forEach(sub => {
+          const subDiv = document.createElement('div');
+          subDiv.className = 'subsection';
+          if (sub.title) {
+            const st = document.createElement('div');
+            st.className = 'subsection-title';
+            st.textContent = sub.title;
+            subDiv.appendChild(st);
+          }
+
+          sub.items.forEach(item => {
+            const row = document.createElement('div');
+            row.className = 'item' + (item.done ? ' done' : '');
+
+            const chk = document.createElement('div');
+            chk.className = 'item-check' + (item.done ? ' checked' : '');
+            chk.onclick = async () => {
+              item.done = !item.done;
+              render();
+              await saveState();
+            };
+
+            const body = document.createElement('div');
+            body.className = 'item-body';
+            let html = `<div class="item-name">${esc(item.name)}</div>`;
+            if (item.owner || item.note) {
+              html += '<div class="item-meta">';
+              if (item.owner) html += `מביאים: <span class="owner">${esc(item.owner)}</span>`;
+              if (item.note) html += `${item.owner ? ' · ' : ''}<span class="item-note">${esc(item.note)}</span>`;
+              html += '</div>';
+            }
+            body.innerHTML = html;
+
+            const acts = document.createElement('div');
+            acts.className = 'item-actions';
+            acts.innerHTML = `
+              <button onclick="window._edit('${section.id}','${sub.id}','${item.id}')" title="ערוך">✏️</button>
+              <button onclick="window._del('${section.id}','${sub.id}','${item.id}')" title="מחק">🗑️</button>
+            `;
+
+            row.appendChild(chk);
+            row.appendChild(body);
+            row.appendChild(acts);
+            subDiv.appendChild(row);
+          });
+
+          // Add row
+          const addRow = document.createElement('div');
+          addRow.className = 'add-row';
+          const inp = document.createElement('input');
+          inp.className = 'add-input';
+          inp.placeholder = 'הוסיפו פריט...';
+          inp.dataset.sec = section.id;
+          inp.dataset.sub = sub.id;
+          inp.onkeydown = e => { if (e.key === 'Enter') window._quickAdd(inp); };
+          const btn = document.createElement('button');
+          btn.className = 'add-btn';
+          btn.textContent = '+ הוסף';
+          btn.onclick = () => window._quickAdd(inp);
+          addRow.appendChild(inp);
+          addRow.appendChild(btn);
+          subDiv.appendChild(addRow);
+          div.appendChild(subDiv);
+        });
+      }
+      appEl.appendChild(div);
+    });
+
+    const footer = document.createElement('div');
+    footer.className = 'footer';
+    footer.innerHTML = '🕯️ שבת שלום לכולם';
+    appEl.appendChild(footer);
+  }
+
+  function esc(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── ACTIONS (exposed to window for inline onclick) ─
+  window._quickAdd = async (inp) => {
+    const name = inp.value.trim();
+    if (!name) return;
+    const sec = state.find(s => s.id === inp.dataset.sec);
+    const sub = sec && sec.subsections.find(s => s.id === inp.dataset.sub);
+    if (!sub) return;
+    sub.items.push({ id: genId(), name, owner: '', note: '', done: false });
+    inp.value = '';
+    render();
+    await saveState();
+    showToast('נוסף ✓');
+  };
+
+  window._del = async (secId, subId, itemId) => {
+    const sec = state.find(s => s.id === secId);
+    const sub = sec && sec.subsections.find(s => s.id === subId);
+    if (!sub) return;
+    sub.items = sub.items.filter(i => i.id !== itemId);
+    render();
+    await saveState();
+  };
+
+  window._edit = (secId, subId, itemId) => {
+    const sec = state.find(s => s.id === secId);
+    const sub = sec && sec.subsections.find(s => s.id === subId);
+    const item = sub && sub.items.find(i => i.id === itemId);
+    if (!item) return;
+    modalCtx = { secId, subId, itemId };
+    document.getElementById('modalName').value = item.name;
+    document.getElementById('modalOwner').value = item.owner || '';
+    document.getElementById('modalNote').value = item.note || '';
+    document.getElementById('modalOverlay').classList.add('open');
+    setTimeout(() => document.getElementById('modalOwner').focus(), 100);
+  };
+
+  window.closeModal = () => {
+    document.getElementById('modalOverlay').classList.remove('open');
+    modalCtx = null;
+  };
+
+  document.getElementById('modalSave').onclick = async () => {
+    if (!modalCtx) return;
+    const { secId, subId, itemId } = modalCtx;
+    const sec = state.find(s => s.id === secId);
+    const sub = sec && sec.subsections.find(s => s.id === subId);
+    const item = sub && sub.items.find(i => i.id === itemId);
+    if (!item) return;
+    const newName = document.getElementById('modalName').value.trim();
+    if (newName) item.name = newName;
+    item.owner = document.getElementById('modalOwner').value.trim();
+    item.note = document.getElementById('modalNote').value.trim();
+    window.closeModal();
+    render();
+    await saveState();
+    showToast('עודכן לכולם ✓');
+  };
+
+  document.getElementById('modalOverlay').onclick = e => {
+    if (e.target === document.getElementById('modalOverlay')) window.closeModal();
+  };
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') window.closeModal(); });
+
+  // ── TOAST ─────────────────────────────────────────
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+  }
+</script>
+</body>
+</html>
